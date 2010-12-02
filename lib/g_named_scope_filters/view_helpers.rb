@@ -113,7 +113,7 @@ module GNamedScopeFilters
         is_selected = all_param.nil? ? params[:filter] == all_param : params[:filter] == all_param.to_s
 
         html << "<li>"
-        html << link_to( link_text, @controller.send( list_path_helper, *(path_helpers[:index_rest_args] + filter_options) ),
+        html << link_to( raw( link_text ), @controller.send( list_path_helper, *(path_helpers[:index_rest_args] + filter_options) ),
                   :class => "#{is_selected ? options[:selected_class] : ''}" )
       end
 
@@ -152,7 +152,7 @@ module GNamedScopeFilters
         end
 
         html << "<li>"
-        html << link_to( link_text, @controller.send( list_path_helper, *(path_helpers[:index_rest_args] + filter_options) ),
+        html << link_to( raw( link_text ), @controller.send( list_path_helper, *(path_helpers[:index_rest_args] + filter_options) ),
                   :class => "#{params[:filter] == filter.to_s ? options[:selected_class] : ''}" )
         html << "</li>"
       end
