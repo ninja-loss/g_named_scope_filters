@@ -106,14 +106,12 @@ module GNamedScopeFilters
           end
         end
 
-        filter_options = []
-        filter_options.push( :order => params[:order] ) if params[:order]
-        filter_options.push( filter_param_key.to_sym => all_param ) if all_param # Send a param for 'All' filter
-
-        is_selected = all_param.nil? ? params[:filter] == all_param : params[:filter] == all_param.to_s
+        filter_options = Hash[params.reject { |k,v| %w(action controller).include?( k ) }]
+        filter_options.merge!( filter_param_key => 'all' )
+        is_selected = params['filter'].nil? || params['filter'] == 'all'
 
         html << "<li>"
-        html << link_to( raw( link_text ), controller.send( list_path_helper, *(path_helpers[:index_rest_args] + filter_options) ),
+        html << link_to( raw( link_text ), controller.send( list_path_helper, *(path_helpers[:index_rest_args] + [filter_options]) ),
                   :class => "#{is_selected ? options[:selected_class] : ''}" )
       end
 
@@ -149,16 +147,11 @@ module GNamedScopeFilters
           end
         end
 
-        filter_options = []
-        #filter_options.merge!( :filter => filter )
-        if filter_options[filter_options.size-1].is_a?( Hash )
-          filter_options[filter_options.size-1].merge!( filter_param_key.to_sym => filter )
-        else
-          filter_options.push( filter_param_key.to_sym => filter )
-        end
+        filter_options = Hash[params.reject { |k,v| %w(action controller).include?( k ) }]
+        filter_options.merge!( 'filter' => filter )
 
         html << "<li>"
-        html << link_to( raw( link_text ), controller.send( list_path_helper, *(path_helpers[:index_rest_args] + filter_options) ),
+        html << link_to( raw( link_text ), controller.send( list_path_helper, *(path_helpers[:index_rest_args] + [filter_options]) ),
                   :class => "#{params[:filter] == filter.to_s ? options[:selected_class] : ''}" )
         html << "</li>"
       end
