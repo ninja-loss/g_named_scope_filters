@@ -88,7 +88,10 @@ module GNamedScopeFilters
 
       # Handle the all filter
       if include_all
-        link_text = all_label
+        link_text = I18n.translate( ['g_named_scope_filters', params[:controller], 'all'].join( '.' ) )
+        if link_text.include?( 'translation missing:' )
+          link_text = all_label
+        end
 
         if options[:include_count]
           if record_counts
