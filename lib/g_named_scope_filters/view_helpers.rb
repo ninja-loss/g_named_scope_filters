@@ -118,8 +118,14 @@ module GNamedScopeFilters
       end
 
       filters.each do |filter|
-        throw "You must define a named scope of '#{filter.to_s}' in order to render a named scope filter for it" unless klass.respond_to?( filter.to_sym )
-        link_text = filter.to_s.humanize
+        unless klass.respond_to?( filter.to_sym )
+          raise "You must define a named scope of '#{filter.to_s}' in order to render a named scope filter for it"
+        end
+
+        link_text = I18n.translate( ['g_named_scope_filters', params[:controller], filter.to_s].join( '.' ) )
+        if link_text.include?( 'translation missing:' )
+          link_text = filter.to_s.humanize
+        end
 
         if options[:include_count]
           if record_counts
